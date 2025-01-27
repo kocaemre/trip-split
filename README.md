@@ -73,7 +73,10 @@ Vercel'de deploy ederken, Environment Variables kısmında aşağıdaki değişk
 
 - `DATABASE_URL`: PostgreSQL veritabanı bağlantı URL'i
 - `NEXTAUTH_URL`: Uygulamanın deploy edildiği URL (örn: https://trip-split.vercel.app)
-- `NEXTAUTH_SECRET`: NextAuth için güvenlik anahtarı
+- `NEXTAUTH_SECRET`: NextAuth için güvenlik anahtarı (aşağıdaki komutla oluşturabilirsiniz)
+  ```bash
+  openssl rand -base64 32
+  ```
 - `GITHUB_ID`: GitHub OAuth uygulama ID'si
 - `GITHUB_SECRET`: GitHub OAuth uygulama gizli anahtarı
 - `SENTRY_DSN`: Sentry hata takibi için DSN URL'i
@@ -155,7 +158,10 @@ When deploying to Vercel, make sure to add the following Environment Variables:
 
 - `DATABASE_URL`: PostgreSQL database connection URL
 - `NEXTAUTH_URL`: The URL where the app is deployed (e.g., https://trip-split.vercel.app)
-- `NEXTAUTH_SECRET`: Security key for NextAuth
+- `NEXTAUTH_SECRET`: Security key for NextAuth (you can generate it with the following command)
+  ```bash
+  openssl rand -base64 32
+  ```
 - `GITHUB_ID`: GitHub OAuth application ID
 - `GITHUB_SECRET`: GitHub OAuth application secret
 - `SENTRY_DSN`: Sentry error tracking DSN URL

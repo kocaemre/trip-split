@@ -1,41 +1,36 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { UserPlus, Loader2 } from "lucide-react";
-import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { UserPlus } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 interface AddMemberButtonProps {
   groupId: string;
 }
 
 export default function AddMemberButton({ groupId }: AddMemberButtonProps) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const router = useRouter();
+  const [email, setEmail] = useState("");
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-
+  const onSubmit = async () => {
     try {
-      const formData = new FormData(e.currentTarget);
-      const email = formData.get("email") as string;
-
-      console.log("Sending request with email:", email);
-
-      const response = await fetch(`/api/groups/${groupId}/members`, {
+      setLoading(true);
+      const res = await fetch(`/api/groups/${groupId}/members`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,24 +38,16 @@ export default function AddMemberButton({ groupId }: AddMemberButtonProps) {
         body: JSON.stringify({ email }),
       });
 
-      console.log("Response status:", response.status);
-      const data = await response.json();
-      console.log("Response data:", data);
-
-      if (!response.ok) {
-        throw new Error(data.error || "Bir hata oluştu");
+      if (!res.ok) {
+        throw new Error("Bir hata oluştu");
       }
 
-      toast.success("Üye başarıyla eklendi!");
+      toast.success("Üye başarıyla eklendi");
+      setEmail("");
       setOpen(false);
       router.refresh();
-    } catch (error: any) {
-      console.error("Error in AddMemberButton:", error);
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Bir hata oluştu. Lütfen tekrar deneyin.");
-      }
+    } catch (error) {
+      toast.error("Üye eklenirken bir hata oluştu");
     } finally {
       setLoading(false);
     }
@@ -69,44 +56,41 @@ export default function AddMemberButton({ groupId }: AddMemberButtonProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700">
+        <Button variant="outline" size="sm">
           <UserPlus className="w-4 h-4 mr-2" />
           Üye Ekle
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Yeni Üye Ekle</DialogTitle>
+          <DialogTitle>Üye Ekle</DialogTitle>
           <DialogDescription>
-            Gruba eklemek istediğiniz kişinin e-posta adresini girin
+            Gruba eklemek istediğiniz kişinin e-posta adresini girin.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={onSubmit} className="space-y-4 mt-4">
+        <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="email">E-posta Adresi</Label>
             <Input
               id="email"
-              name="email"
               type="email"
-              placeholder="ornek@email.com"
-              required
-              disabled={loading}
-              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="flex justify-end">
-            <Button type="submit" disabled={loading}>
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Ekleniyor...
-                </>
-              ) : (
-                "Ekle"
-              )}
-            </Button>
-          </div>
-        </form>
+        </div>
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            disabled={loading}
+          >
+            İptal
+          </Button>
+          <Button onClick={onSubmit} disabled={loading}>
+            {loading ? "Ekleniyor..." : "Ekle"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

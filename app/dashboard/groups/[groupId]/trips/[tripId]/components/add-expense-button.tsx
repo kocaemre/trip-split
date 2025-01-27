@@ -15,51 +15,48 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "react-hot-toast";
 import { Plus } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 interface AddExpenseButtonProps {
   tripId: string;
 }
 
 export default function AddExpenseButton({ tripId }: AddExpenseButtonProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("");
-  const [notes, setNotes] = useState("");
-  const router = useRouter();
+  const [note, setNote] = useState("");
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async () => {
     try {
-      setIsLoading(true);
-      const response = await fetch("/api/expenses", {
+      setLoading(true);
+      const res = await fetch(`/api/expenses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           amount: parseFloat(amount),
-          notes,
+          note,
           tripId,
         }),
       });
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Bir hata oluştu");
+      if (!res.ok) {
+        throw new Error("Bir hata oluştu");
       }
 
-      toast.success("Harcama eklendi");
-      router.refresh();
-      setOpen(false);
-      // Form verilerini temizle
+      toast.success("Harcama başarıyla eklendi");
       setAmount("");
-      setNotes("");
-    } catch (error: any) {
-      toast.error(error.message);
+      setNote("");
+      setOpen(false);
+      router.refresh();
+    } catch (error) {
+      toast.error("Harcama eklenirken bir hata oluştu");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -72,53 +69,45 @@ export default function AddExpenseButton({ tripId }: AddExpenseButtonProps) {
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <form onSubmit={onSubmit}>
-          <DialogHeader>
-            <DialogTitle>Harcama Ekle</DialogTitle>
-            <DialogDescription>
-              Seyahate yeni bir harcama ekleyin.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div>
-              <Label htmlFor="amount">Miktar (₺)</Label>
-              <Input
-                id="amount"
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0.00"
-                required
-                disabled={isLoading}
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label htmlFor="notes">Not</Label>
-              <Textarea
-                id="notes"
-                placeholder="Harcama hakkında not ekleyin"
-                disabled={isLoading}
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-              />
-            </div>
+        <DialogHeader>
+          <DialogTitle>Yeni Harcama</DialogTitle>
+          <DialogDescription>
+            Seyahate yeni bir harcama ekleyin.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="amount">Tutar</Label>
+            <Input
+              id="amount"
+              type="number"
+              placeholder="0.00"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
           </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-              disabled={isLoading}
-            >
-              İptal
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              Ekle
-            </Button>
-          </DialogFooter>
-        </form>
+          <div className="space-y-2">
+            <Label htmlFor="note">Not</Label>
+            <Textarea
+              id="note"
+              placeholder="Harcama hakkında not ekleyin..."
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            disabled={loading}
+          >
+            İptal
+          </Button>
+          <Button onClick={onSubmit} disabled={loading}>
+            {loading ? "Ekleniyor..." : "Ekle"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

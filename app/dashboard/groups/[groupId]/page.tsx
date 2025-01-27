@@ -4,9 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeft, Plus, Users2, Plane, Crown, UserPlus } from "lucide-react";
+import { ArrowLeft, Plus, Users2, Plane, Crown } from "lucide-react";
 import AddMemberButton from "./components/add-member-button";
-import { EditGroupButton } from "./components/edit-group-button";
+import EditGroupButton from "./components/edit-group-button";
+
 
 interface GroupPageProps {
   params: {
@@ -56,7 +57,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
 
   // Kullanıcının grupta olup olmadığını kontrol et
   const isMember = group.members.some(
-    (member) => member.user.email === session.user.email
+    (member) => member.user.email === session?.user?.email
   );
 
   if (!isMember) {

@@ -21,7 +21,7 @@ TripSplit, seyahat masraflarınızı arkadaşlarınızla kolayca paylaşmanızı
 
 ## Teknolojiler
 
-- Next.js 14
+- Next.js 15
 - TypeScript
 - Prisma
 - PostgreSQL
@@ -106,7 +106,7 @@ TripSplit is a web application that helps you easily share travel expenses with 
 
 ## Technologies
 
-- Next.js 14
+- Next.js 15
 - TypeScript
 - Prisma
 - PostgreSQL

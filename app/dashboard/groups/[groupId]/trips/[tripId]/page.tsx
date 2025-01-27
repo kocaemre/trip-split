@@ -18,6 +18,7 @@ interface TripPageProps {
 
 export default async function TripPage({ params }: TripPageProps) {
   const session = await getServerSession(authOptions);
+  const { groupId, tripId } = params;
 
   if (!session?.user?.email) {
     return notFound();
@@ -35,8 +36,8 @@ export default async function TripPage({ params }: TripPageProps) {
 
   const trip = await prisma.trip.findUnique({
     where: {
-      id: params.tripId,
-      groupId: params.groupId,
+      id: tripId,
+      groupId: groupId,
     },
     include: {
       group: {
@@ -61,7 +62,7 @@ export default async function TripPage({ params }: TripPageProps) {
   }
 
   const isMember = trip.group.members.some(
-    (member) => member.user.email === session.user.email
+    (member) => member.user.email === session?.user?.email
   );
 
   if (!isMember) {
@@ -89,13 +90,13 @@ export default async function TripPage({ params }: TripPageProps) {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           {/* Üst Kısım */}
           <div>
             <Link
-              href={`/dashboard/groups/${params.groupId}`}
+              href={`/dashboard/groups/${groupId}`}
               className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
@@ -120,16 +121,16 @@ export default async function TripPage({ params }: TripPageProps) {
               </div>
               <div className="flex items-center gap-4">
                 {trip.status !== "COMPLETED" && (
-                  <AddExpenseButton tripId={params.tripId} />
+                  <AddExpenseButton tripId={tripId} />
                 )}
                 <EditTripButton
-                  tripId={params.tripId}
+                  tripId={tripId}
                   tripName={trip.name}
                   isCreator={isCreator}
-                  groupId={params.groupId}
+                  groupId={groupId}
                 />
                 <CompleteTripButton
-                  tripId={params.tripId}
+                  tripId={tripId}
                   isCompleted={trip.status === "COMPLETED"}
                   isCreator={isCreator}
                 />
@@ -140,7 +141,7 @@ export default async function TripPage({ params }: TripPageProps) {
           {/* Ana İçerik */}
           <div className="grid gap-8 lg:grid-cols-2">
             {/* Harcamalar */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white rounded-2xl p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Harcamalar</h2>
               {trip.expenses.length === 0 ? (
                 <div className="text-center py-12 px-4">

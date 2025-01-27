@@ -14,7 +14,7 @@ export default async function NewGroupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)]">
           {/* Geri Dön Linki */}
@@ -30,7 +30,7 @@ export default async function NewGroupPage() {
 
           {/* Form Kartı */}
           <div className="w-full max-w-md">
-            <div className="bg-white/70 backdrop-blur-sm p-8 rounded-2xl border border-gray-100 shadow-sm">
+            <div className="backdrop-blur-sm p-8 rounded-2xl border shadow-sm">
               <div className="text-center mb-8">
                 <h1 className="text-2xl font-bold text-gray-900">
                   Yeni Grup Oluştur

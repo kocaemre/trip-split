@@ -18,11 +18,13 @@ import { CheckCircle } from "lucide-react";
 interface CompleteTripButtonProps {
   tripId: string;
   isCreator: boolean;
+  isCompleted: boolean;
 }
 
 export default function CompleteTripButton({
   tripId,
   isCreator,
+  isCompleted,
 }: CompleteTripButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);

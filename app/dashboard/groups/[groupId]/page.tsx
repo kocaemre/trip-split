@@ -17,37 +17,33 @@ interface GroupPageProps {
 
 export default async function GroupPage({ params }: GroupPageProps) {
   const session = await getServerSession(authOptions);
+  const { groupId } = params;
 
   if (!session?.user?.email) {
-    redirect("/auth/login");
+    return notFound();
   }
 
-  // Önce kullanıcıyı bul
-  const currentUser = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       email: session.user.email,
     },
   });
 
-  if (!currentUser) {
-    redirect("/auth/login");
+  if (!user) {
+    return notFound();
   }
 
   const group = await prisma.group.findUnique({
     where: {
-      id: params.groupId,
+      id: groupId,
     },
     include: {
-      trips: {
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
       members: {
         include: {
           user: true,
         },
       },
+      trips: true,
     },
   });
 
@@ -65,10 +61,10 @@ export default async function GroupPage({ params }: GroupPageProps) {
   }
 
   // Kullanıcının grup sahibi olup olmadığını kontrol et
-  const isOwner = group.ownerId === currentUser.id;
+  const isOwner = group.ownerId === user.id;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           {/* Üst Kısım */}
@@ -97,13 +93,13 @@ export default async function GroupPage({ params }: GroupPageProps) {
               <div className="flex items-center gap-4">
                 {isOwner && (
                   <EditGroupButton
-                    groupId={params.groupId}
+                    groupId={groupId}
                     groupName={group.name}
                     isOwner={isOwner}
                   />
                 )}
                 <Button asChild>
-                  <Link href={`/dashboard/groups/${params.groupId}/trips/new`}>
+                  <Link href={`/dashboard/groups/${groupId}/trips/new`}>
                     <Plus className="w-4 h-4 mr-2" />
                     Yeni Seyahat
                   </Link>

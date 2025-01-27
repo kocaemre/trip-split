@@ -67,6 +67,17 @@ npm run dev
 
 [https://trip-split.vercel.app](https://trip-split.vercel.app)
 
+## Vercel Deployment
+
+Vercel'de deploy ederken, Environment Variables kısmında aşağıdaki değişkenleri eklemeyi unutmayın:
+
+- `DATABASE_URL`: PostgreSQL veritabanı bağlantı URL'i
+- `NEXTAUTH_URL`: Uygulamanın deploy edildiği URL (örn: https://trip-split.vercel.app)
+- `NEXTAUTH_SECRET`: NextAuth için güvenlik anahtarı
+- `GITHUB_ID`: GitHub OAuth uygulama ID'si
+- `GITHUB_SECRET`: GitHub OAuth uygulama gizli anahtarı
+- `SENTRY_DSN`: Sentry hata takibi için DSN URL'i
+
 ---
 
 # TripSplit [EN]
@@ -137,3 +148,14 @@ npm run dev
 ## Live Demo
 
 [https://trip-split.vercel.app](https://trip-split.vercel.app)
+
+## Vercel Deployment
+
+When deploying to Vercel, make sure to add the following Environment Variables:
+
+- `DATABASE_URL`: PostgreSQL database connection URL
+- `NEXTAUTH_URL`: The URL where the app is deployed (e.g., https://trip-split.vercel.app)
+- `NEXTAUTH_SECRET`: Security key for NextAuth
+- `GITHUB_ID`: GitHub OAuth application ID
+- `GITHUB_SECRET`: GitHub OAuth application secret
+- `SENTRY_DSN`: Sentry error tracking DSN URL

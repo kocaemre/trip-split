@@ -163,7 +163,7 @@ export default async function TripPage({ params }: TripPageProps) {
                           ₺{expense.amount.toFixed(2)}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {expense.note || "Not eklenmemiş"}
+                          {expense.note === null || expense.note === undefined ? "Not eklenmemiş" : expense.note}
                         </div>
                         <div className="text-sm text-gray-500">
                           {expense.paidBy.name} tarafından ödendi

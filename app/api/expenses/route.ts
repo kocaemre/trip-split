@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { amount, tripId, notes } = body;
+    const { amount, tripId, note } = body;
 
     if (!amount || !tripId) {
       return NextResponse.json(
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
     const expense = await prisma.expense.create({
       data: {
         amount,
-        note: notes,
+        note,
         tripId,
         paidById: user.id,
       },
